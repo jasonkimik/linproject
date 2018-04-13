@@ -68,22 +68,21 @@ process([bye|_]):-
 % Lemmas are uninflected, except for irregular inflection
 % lemma(+Lemma,+Category)
 % --------------------------------------------------------------------
-lemma(a,dtexists).
-lemma(an,dtexists).
-lemma(each,dtforall).
-lemma(all,dtforall).
-lemma(every,dtforall).
+lemma(bowl,n).
 lemma(box,n).
-lemma(tom,pn).
-lemma(mia,pn).
-lemma(red,adj).
-lemma(is,be).
-lemma(was,be).
-lemma(eat,tv).
-lemma(in,p).
-lemma(under,p).
-lemma(on,vacp).   
-lemma(to,vacp).
+lemma(shelf,n).
+lemma(thing,n).
+lemma(egg,n).
+lemma(freezer,n).
+lemma(ham,n).
+lemma(container,n).
+lemma(sandwich,n).
+lemma(meat,n).
+lemma(watermelon,n).
+lemma(fridge,n).
+lemma(milk,n).
+lemma(popsicle,n).
+
 
  
 % --------------------------------------------------------------------

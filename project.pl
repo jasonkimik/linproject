@@ -84,6 +84,78 @@ lemma(milk,n).
 lemma(popsicle,n).
 
 
+lemma(tom,pn).
+lemma(mia,pn).
+lemma(sam,pn).
+lemma(sue,pn).
+
+lemma(a,dtexists).
+lemma(an,dtexists).
+lemma(some,dtexists).
+
+lemma(each,dtforall).
+lemma(all,dtforall).
+lemma(every,dtforall).
+
+lemma(no,dtnotexist).
+
+lemma(red,adj).
+lemma(blue,adj).
+lemma(yellow,adj).
+lemma(green,adj).
+lemma(white,adj).
+lemma(top,adj).
+lemma(middle,adj).
+lemma(bottom,adj).
+lemma(almond,adj).
+lemma(empty,adj).
+
+lemma(exist,iv).
+
+lemma(eat,tv).
+lemma(contain,tv).
+lemma(belong,tv).
+lemma(have,tv).
+lemma(has,tv).
+lemma(had,tv).
+lemma(drink,tv).
+lemma(drank,tv).
+lemma(drunk,tv).
+
+lemma(put,dtv).
+
+lemma(in,p).
+lemma(under,p).
+
+lemma(on,vacp).   
+lemma(to,vacp).
+
+lemma(for,con).
+lemma(so,con).
+lemma(yet,con).
+lemma(but,con).
+lemma(nor,con).
+lemma(or,con).
+lemma(and,con).
+
+lemma(is,aux).
+lemma(was,aux).
+lemma(am,aux).
+lemma(were,aux).
+lemma(are,aux).
+lemma(do,aux).
+lemma(did,aux).
+lemma(does,aux).
+lemma(have,aux).
+lemma(has,aux).
+lemma(had,aux).
+lemma(can,aux).
+lemma(could,aux).
+lemma(may,aux).
+lemma(will,aux).
+lemma(should,aux).
+lemma(would,aux).
+
  
 % --------------------------------------------------------------------
 % Constructing lexical items:
@@ -98,7 +170,32 @@ lex(n(X^P),Lemma):-
 lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
 		lemma(Word,dtforall).
 				
-% ...
+lex(n(X^P),Lemma):-
+	lemma(Lemma,n),
+	P=.. [Lemma,X].
+lex(pn((Name^X)^X),Name):-
+	lemma(Name,pn).
+
+lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
+		lemma(Word,dtforall).
+lex(dt((X^P)^(X^Q)^exists(X,imp(P,Q))),Word):-
+		lemma(Word,dtexists).
+lex(dt((X^P)^(X^Q)^notexist(X,imp(P,Q))),Word):-
+	lemma(Word,dtnotexist).
+
+lex(adj((X^P)^X^and(P,K):-
+	lemma(Lemma,adj),
+	K=.. [Lemma,X].
+
+lex(p((Y^K)^Q^(X^P)^and(P,Q)),Lemma):-
+	lemma(Lemma,p),
+	K=.. [Lemma,X,Y].
+
+lex(iv(X^P),Lemma):-
+	lemma(Lemma,iv),
+	P=.. [Lemma,X].
+
+
 
 % --------------------------------------------------------------------
 % Suffix types

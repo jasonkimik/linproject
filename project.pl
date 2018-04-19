@@ -83,11 +83,11 @@ lemma(fridge,n).
 lemma(milk,n).
 lemma(popsicle,n).
 
-
 lemma(tom,pn).
 lemma(mia,pn).
 lemma(sam,pn).
 lemma(sue,pn).
+
 
 lemma(a,dtexists).
 lemma(an,dtexists).
@@ -99,6 +99,19 @@ lemma(every,dtforall).
 
 lemma(no,dtnotexist).
 
+lemma(zero,car).
+lemma(one,car).
+lemma(two,car).
+lemma(three,car).
+lemma(four,car).
+lemma(five,car).
+lemma(six,car).
+lemma(seven,car).
+lemma(eight,car).
+lemma(nine,car).
+lemma(ten,car).
+
+
 lemma(red,adj).
 lemma(blue,adj).
 lemma(yellow,adj).
@@ -109,6 +122,12 @@ lemma(middle,adj).
 lemma(bottom,adj).
 lemma(almond,adj).
 lemma(empty,adj).
+
+lemma(first,ord).
+lemma(second,ord).
+lemma(third,ord).
+lemma(fifth,ord).
+
 
 lemma(exist,iv).
 
@@ -124,11 +143,22 @@ lemma(drunk,tv).
 
 lemma(put,dtv).
 
+
 lemma(in,p).
 lemma(under,p).
+lemma(top,p).
+lemma(inside,p).
+lemma(with,p).
+lemma(of,p).
+lemma(on,p).   
+lemma(to,p).
+lemma(at,p).
 
+lemma(at,vacp).
+lemma(of,vacp).
 lemma(on,vacp).   
 lemma(to,vacp).
+
 
 lemma(for,con).
 lemma(so,con).
@@ -137,6 +167,7 @@ lemma(but,con).
 lemma(nor,con).
 lemma(or,con).
 lemma(and,con).
+
 
 lemma(is,aux).
 lemma(was,aux).
@@ -155,6 +186,15 @@ lemma(may,aux).
 lemma(will,aux).
 lemma(should,aux).
 lemma(would,aux).
+
+
+lemma(who,WH).
+lemma(what,WH).
+lemma(which,WH).
+
+
+lemma(no,neg).
+lemma(not,neg).
 
  
 % --------------------------------------------------------------------
@@ -211,7 +251,30 @@ lex(iv(X^P),Lemma):-
 rule(np(Y),[dt(X^Y),n(X)]).
 rule(np(X),[pn(X)]).
 
-% ...
+rule(s(Y),[np(X^Y),vp(X)]).                
+
+rule(n(Y),[adj(X^Y),n(X)]).
+
+rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
+rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
+
+rule(vp(X),[iv(X)]).
+rule(vp(X^W),[tv(X^Y),np(Y^W)]).
+
+rule(s(Y,WH),[np(X^Y),vp(X,WH)]).
+rule(vp(X,WH),[iv(X,WH)]).
+rule(vp(X^K,[]),[tv(X^Y,[]),np(Y^K)]).
+
+rule(s(X,[WH]),[vp(X,[WH])]).
+rule(vp(K,[WH]),[tv(Y,[WH]),np(Y^K)]).
+
+rule(Y,[whpr(X^Y),vp(X,[])]).
+rule(ynq(Y),[aux,np(X^Y),vp(X,[])]).
+rule(Z,[whpr((X^Y)^Z),inv_s(Y,[X])]).
+rule(inv_s(Y,[WH]),[aux,np(X^Y),vp(X,[WH])]).
+
+rule(n(X^and(Y,Z)),[n(X^Y),rc(X^Z,[])]).
+rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
 
 
 % ===========================================================

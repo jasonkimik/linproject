@@ -188,9 +188,9 @@ lemma(should,aux).
 lemma(would,aux).
 
 
-lemma(who,WH).
-lemma(what,WH).
-lemma(which,WH).
+lemma(who,wh).
+lemma(what,wh).
+lemma(which,wh).
 
 
 lemma(no,neg).

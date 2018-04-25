@@ -136,14 +136,9 @@ lemma(not,adv).
 lemma(exist,iv).
 
 lemma(eat,tv).
+lemma(ate,tv).
 lemma(contain,tv).
 lemma(belong,tv).
-lemma(have,tv).
-lemma(has,tv).
-lemma(had,tv).
-lemma(drink,tv).
-lemma(drank,tv).
-lemma(drunk,tv).
 
 lemma(put,dtv).
 
@@ -252,7 +247,7 @@ lex(dtv(K^W^J^P),Lemma):-
 % --------------------------------------------------------------------
 
 uninflect0(X):- lemma(X).
-uninflect0(X):- atom_concat(A,B,X), lemma(A), uninflect1(B).
+uninflect0(X):- atom_concat(A,B,X), lemma(A,_), uninflect1(B).
 uninflect1(‘’).
 uninflect1(X):- noun_inflection(X).
 uninflect1(X):- verb_inflection(X).

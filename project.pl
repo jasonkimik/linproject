@@ -1,4 +1,4 @@
-
+   
 % ===========================================================
 % Main loop:
 % 1. Repeat "input-response" cycle until input starts with "bye"
@@ -130,7 +130,7 @@ lemma(almond,adj).
 lemma(empty,adj).
 lemma(ham,adj).
 
-lemma(not,adv)
+lemma(not,adv).
 
 
 lemma(exist,iv).
@@ -204,13 +204,6 @@ lemma(that, rel).
 lex(n(X^P),Lemma):-
 	lemma(Lemma,n),
 	P=.. [Lemma,X].
-
-lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
-		lemma(Word,dtforall).
-				
-lex(n(X^P),Lemma):-
-	lemma(Lemma,n),
-	P=.. [Lemma,X].
 lex(wh(X^P),Lemma):-
 	lemma(Lemma,wh),
 	P=.. [Lemma,X].
@@ -220,6 +213,7 @@ lex(pron(X^P),Lemma):-
 lex(pn((Name^X)^X),Name):-
 	lemma(Name,pn).
 
+
 lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
 		lemma(Word,dtforall).
 lex(dt((X^P)^(X^Q)^exists(X,imp(P,Q))),Word):-
@@ -227,16 +221,19 @@ lex(dt((X^P)^(X^Q)^exists(X,imp(P,Q))),Word):-
 lex(dt((X^P)^(X^Q)^notexist(X,imp(P,Q))),Word):-
 	lemma(Word,dtnotexist).
 
-lex(adj((X^P)^X^and(P,K):-
+
+lex(adj((X^P)^X^and(P,K)),Lemma):-
 	lemma(Lemma,adj),
 	K=.. [Lemma,X].
-lex(adv((X^P)^X^and(P,K):-
+lex(adv((X^P)^X^and(P,K)),Lemma):-
 	lemma(Lemma,adv),
 	K=.. [Lemma,X].
+
 
 lex(p((Y^K)^Q^(X^P)^and(P,Q)),Lemma):-
 	lemma(Lemma,p),
 	K=.. [Lemma,X,Y].
+
 
 lex(iv(X^P),Lemma):-
 	lemma(Lemma,iv),
@@ -244,7 +241,7 @@ lex(iv(X^P),Lemma):-
 lex(tv(K^W^P),Lemma):-
 	lemma(Lemma,tv),
 	P=.. [Lemma,K,W].
-lex(dtv(K^W^P),Lemma):-
+lex(dtv(K^W^J^P),Lemma):-
 	lemma(Lemma,tv),
 	P=.. [Lemma,K,W,J].
 
@@ -254,10 +251,10 @@ lex(dtv(K^W^P),Lemma):-
 % Suffix types
 % --------------------------------------------------------------------
 
-uninflect(X):- atom_concat(A,B,X), lemma(A), q1(B).
-uninflect(‘’).
-uninflect(X):- noun_inflection(X).
-uninflect(X):- verb_inflection(X).
+uninflect0(X):- atom_concat(A,B,X), lemma(A), uninflect1(B).
+uninflect1(‘’).
+uninflect1(X):- noun_inflection(X).
+uninflect1(X):- verb_inflection(X).
 
 noun_inflection(s).
 noun_inflection(es).
@@ -288,7 +285,7 @@ rule(vp(X^W),[dtv(X^Y^K),np(Y^W),np(K^W)]).
 rule(s(Y,WH),[np(X^Y),vp(X,WH)]).
 rule(vp(X,WH),[iv(X,WH)]).
 rule(vp(X^K,[]),[tv(X^Y,[]),np(Y^K)]).
-rule(vp(X^K,[]),[dtv(X^Y^J,[],),np(Y^K),np(J,K)]).
+rule(vp(X^K,[]),[dtv(X^Y^J,[]),np(Y^K),np(J,K)]).
 
 rule(s(X,[WH]),[vp(X,[WH])]).
 rule(vp(K,[WH]),[tv(Y,[WH]),np(Y^K)]).
@@ -342,4 +339,3 @@ respond(Evaluation) :-
 
 % wh-interrogative false in the model
 % ...							
-

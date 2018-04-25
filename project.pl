@@ -83,6 +83,12 @@ lemma(fridge,n).
 lemma(milk,n).
 lemma(popsicle,n).
 
+lemma(who,wh).
+lemma(what,wh).
+lemma(which,wh).
+
+lemma(there,pron).
+
 lemma(tom,pn).
 lemma(mia,pn).
 lemma(sam,pn).
@@ -99,17 +105,17 @@ lemma(every,dtforall).
 
 lemma(no,dtnotexist).
 
-lemma(zero,car).
-lemma(one,car).
-lemma(two,car).
-lemma(three,car).
-lemma(four,car).
-lemma(five,car).
-lemma(six,car).
-lemma(seven,car).
-lemma(eight,car).
-lemma(nine,car).
-lemma(ten,car).
+lemma(zero,dtcar).
+lemma(one,dtcar).
+lemma(two,dtcar).
+lemma(three,dtcar).
+lemma(four,dtcar).
+lemma(five,dtcar).
+lemma(six,dtcar).
+lemma(seven,dtcar).
+lemma(eight,dtcar).
+lemma(nine,dtcar).
+lemma(ten,dtcar).
 
 
 lemma(red,adj).
@@ -122,11 +128,9 @@ lemma(middle,adj).
 lemma(bottom,adj).
 lemma(almond,adj).
 lemma(empty,adj).
+lemma(ham,adj).
 
-lemma(first,ord).
-lemma(second,ord).
-lemma(third,ord).
-lemma(fifth,ord).
+lemma(not,adv)
 
 
 lemma(exist,iv).
@@ -188,14 +192,8 @@ lemma(should,aux).
 lemma(would,aux).
 
 
-lemma(who,wh).
-lemma(what,wh).
-lemma(which,wh).
-
-
-lemma(no,neg).
-lemma(not,neg).
-
+lemma(that, rel).
+ 
  
 % --------------------------------------------------------------------
 % Constructing lexical items:
@@ -213,6 +211,12 @@ lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
 lex(n(X^P),Lemma):-
 	lemma(Lemma,n),
 	P=.. [Lemma,X].
+lex(wh(X^P),Lemma):-
+	lemma(Lemma,wh),
+	P=.. [Lemma,X].
+lex(pron(X^P),Lemma):-
+	lemma(Lemma,pron),
+	P=.. [Lemma,X].
 lex(pn((Name^X)^X),Name):-
 	lemma(Name,pn).
 
@@ -226,6 +230,9 @@ lex(dt((X^P)^(X^Q)^notexist(X,imp(P,Q))),Word):-
 lex(adj((X^P)^X^and(P,K):-
 	lemma(Lemma,adj),
 	K=.. [Lemma,X].
+lex(adv((X^P)^X^and(P,K):-
+	lemma(Lemma,adv),
+	K=.. [Lemma,X].
 
 lex(p((Y^K)^Q^(X^P)^and(P,Q)),Lemma):-
 	lemma(Lemma,p),
@@ -234,6 +241,12 @@ lex(p((Y^K)^Q^(X^P)^and(P,Q)),Lemma):-
 lex(iv(X^P),Lemma):-
 	lemma(Lemma,iv),
 	P=.. [Lemma,X].
+lex(tv(K^W^P),Lemma):-
+	lemma(Lemma,tv),
+	P=.. [Lemma,K,W].
+lex(dtv(K^W^P),Lemma):-
+	lemma(Lemma,tv),
+	P=.. [Lemma,K,W,J].
 
 
 
@@ -241,7 +254,17 @@ lex(iv(X^P),Lemma):-
 % Suffix types
 % --------------------------------------------------------------------
 
-% ...
+uninflect(X):- atom_concat(A,B,X), lemma(A), q1(B).
+uninflect(‘’).
+uninflect(X):- noun_inflection(X).
+uninflect(X):- verb_inflection(X).
+
+noun_inflection(s).
+noun_inflection(es).
+verb_inflection(s).
+verb_inflection(ing).
+verb_inflection(ed).
+
 
 % --------------------------------------------------------------------
 % Phrasal rules
@@ -260,13 +283,16 @@ rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
 
 rule(vp(X),[iv(X)]).
 rule(vp(X^W),[tv(X^Y),np(Y^W)]).
+rule(vp(X^W),[dtv(X^Y^K),np(Y^W),np(K^W)]).
 
 rule(s(Y,WH),[np(X^Y),vp(X,WH)]).
 rule(vp(X,WH),[iv(X,WH)]).
 rule(vp(X^K,[]),[tv(X^Y,[]),np(Y^K)]).
+rule(vp(X^K,[]),[dtv(X^Y^J,[],),np(Y^K),np(J,K)]).
 
 rule(s(X,[WH]),[vp(X,[WH])]).
 rule(vp(K,[WH]),[tv(Y,[WH]),np(Y^K)]).
+rule(vp(K,[WH]),[dtv(Y^J,[WH]),np(Y^K),np(J^K)]).
 
 rule(Y,[whpr(X^Y),vp(X,[])]).
 rule(ynq(Y),[aux,np(X^Y),vp(X,[])]).

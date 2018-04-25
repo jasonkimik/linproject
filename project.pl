@@ -251,6 +251,7 @@ lex(dtv(K^W^J^P),Lemma):-
 % Suffix types
 % --------------------------------------------------------------------
 
+uninflect0(X):- lemma(X).
 uninflect0(X):- atom_concat(A,B,X), lemma(A), uninflect1(B).
 uninflect1(‘’).
 uninflect1(X):- noun_inflection(X).

@@ -247,7 +247,7 @@ lex(dtv(K^W^J^P),Lemma):-
 % Suffix types
 % --------------------------------------------------------------------
 
-uninflect0(X):- lemma(X,Y).
+uninflect0(X,Y):- lemma(X,A), Y=X.
 uninflect0(X,Y):- atom_concat(A,B,X), lemma(A,_), uninflect1(B),Y=A.
 uninflect1(‘’).
 uninflect1(X):- noun_inflection(X).
@@ -258,7 +258,6 @@ noun_inflection(es).
 verb_inflection(s).
 verb_inflection(ing).
 verb_inflection(ed).
-
 
 % --------------------------------------------------------------------
 % Phrasal rules

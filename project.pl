@@ -1,4 +1,5 @@
    
+   
 % ===========================================================
 % Main loop:
 % 1. Repeat "input-response" cycle until input starts with "bye"
@@ -246,8 +247,8 @@ lex(dtv(K^W^J^P),Lemma):-
 % Suffix types
 % --------------------------------------------------------------------
 
-uninflect0(X):- lemma(X).
-uninflect0(X):- atom_concat(A,B,X), lemma(A,_), uninflect1(B).
+uninflect0(X):- lemma(X,Y).
+uninflect0(X,Y):- atom_concat(A,B,X), lemma(A,_), uninflect1(B),Y=A.
 uninflect1(‘’).
 uninflect1(X):- noun_inflection(X).
 uninflect1(X):- verb_inflection(X).
@@ -334,4 +335,3 @@ respond(Evaluation) :-
 % ...							
 
 % wh-interrogative false in the model
-% ...							

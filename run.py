@@ -38,7 +38,8 @@ def process(line):
 def parse(line):
 	toReturn = []
 	for word in line:
-		toPrint = list(prolog.query("lemma(" + word + ",X)"))
+		toLemma = list(prolog.query("uninflect0(" + word + ",Y)"))[0]['Y']
+		toPrint = list(prolog.query("lemma(" + toLemma + ",X)"))
 		toReturn.append([word,toPrint[0]["X"]])
 	return toReturn
 chat()

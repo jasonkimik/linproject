@@ -2,7 +2,7 @@
 from pyswip import Prolog
 
 prolog = Prolog()
-prolog.consult("rules.pl")
+prolog.consult("project.pl")
 
 # ===========================================================
 # Main loop:
@@ -38,8 +38,7 @@ def process(line):
 def parse(line):
 	toReturn = []
 	for word in line:
-		toLemma = list(prolog.query("uninflect0(" + word + ",Y)"))[0]['Y']
-		toPrint = list(prolog.query("lemma(" + toLemma + ",X)"))
-		toReturn.append([word,toPrint[0]["X"]])
+		toPrint = list(prolog.query("tag(" + word + ",Y,Z)"))
+		toReturn.append([toPrint[0]["Y"],toPrint[0]["Z"]])
 	return toReturn
 chat()

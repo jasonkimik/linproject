@@ -1,13 +1,4 @@
    
-   
-% ===========================================================
-% Main loop:
-% 1. Repeat "input-response" cycle until input starts with "bye"
-%    Each "input-response" cycle consists of:
-% 		1.1 Reading an input string and convert it to a tokenized list
-% 		1.2 Processing tokenized list
-% ===========================================================
-
 chat:-
  repeat,
    readinput(Input),
@@ -98,6 +89,7 @@ lemma(sue,pn).
 
 lemma(a,dtexists).
 lemma(an,dtexists).
+lemma(the,dtexists).
 lemma(some,dtexists).
 
 lemma(each,dtforall).
@@ -258,6 +250,9 @@ noun_inflection(es).
 verb_inflection(s).
 verb_inflection(ing).
 verb_inflection(ed).
+
+tag(X,Y,Z):- uninflect0(X,K),Y=K, lemma(K,Z).
+
 
 % --------------------------------------------------------------------
 % Phrasal rules

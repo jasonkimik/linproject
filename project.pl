@@ -75,6 +75,16 @@ lemma(fridge,n).
 lemma(milk,n).
 lemma(popsicle,n).
 
+is(ham,meat).
+is(meat,food).
+is(watermelon,food).
+is(egg,food).
+is(sandwich,food).
+is(popsicle,food).
+is(milk,beverage).
+is(X,thing):-	lemma(X,n).
+
+
 lemma(who,wh).
 lemma(what,wh).
 lemma(which,wh).

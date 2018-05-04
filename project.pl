@@ -60,6 +60,7 @@ process([bye|_]):-
 % Lemmas are uninflected, except for irregular inflection
 % lemma(+Lemma,+Category)
 % --------------------------------------------------------------------
+
 lemma(bowl,n).
 lemma(box,n).
 lemma(shelf,n).
@@ -234,9 +235,8 @@ lex(dtv((K^W^J^P),[]),Word):-
 
 lex(aux(X),Lemma):-
     lemma(Lemma,aux).
-    
-   
-lex(rel((X^P),[]),Lemma):-
+      
+lex(rel(X),Lemma):-
     lemma(Lemma,rel).
 
 % --------------------------------------------------------------------

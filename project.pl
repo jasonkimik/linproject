@@ -75,14 +75,14 @@ lemma(fridge,n).
 lemma(milk,n).
 lemma(popsicle,n).
 
-is(ham,meat).
-is(meat,food).
-is(watermelon,food).
-is(egg,food).
-is(sandwich,food).
-is(popsicle,food).
-is(milk,beverage).
-is(X,thing):-	lemma(X,n).
+is_a(ham,meat).
+is_a(meat,food).
+is_a(watermelon,food).
+is_a(egg,food).
+is_a(sandwich,food).
+is_a(popsicle,food).
+is_a(milk,beverage).
+is_a(X,thing):-	lemma(X,n).
 
 
 lemma(who,wh).
@@ -156,21 +156,6 @@ lemma(on,p).
 lemma(to,p).
 lemma(at,p).
 
-lemma(at,vacp).
-lemma(of,vacp).
-lemma(on,vacp).   
-lemma(to,vacp).
-
-
-lemma(for,con).
-lemma(so,con).
-lemma(yet,con).
-lemma(but,con).
-lemma(nor,con).
-lemma(or,con).
-lemma(and,con).
-
-
 lemma(is,aux).
 lemma(was,aux).
 lemma(am,aux).
@@ -199,7 +184,8 @@ lemma(that, rel).
 % --------------------------------------------------------------------
 
 
-lex(n(X^P),Lemma):-
+lex(n(X^P),Word):-
+  	uninflect0(Word,Lemma),
 	lemma(Lemma,n),
 	P=.. [Lemma,X].
 lex(wh(X^P),Lemma):-
@@ -213,9 +199,9 @@ lex(pn((Name^X)^X),Name):-
 
 
 lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
-		lemma(Word,dtforall).
+	lemma(Word,dtforall).
 lex(dt((X^P)^(X^Q)^exists(X,imp(P,Q))),Word):-
-		lemma(Word,dtexists).
+	lemma(Word,dtexists).
 lex(dt((X^P)^(X^Q)^notexist(X,imp(P,Q))),Word):-
 	lemma(Word,dtnotexist).
 
@@ -233,27 +219,35 @@ lex(p((Y^K)^Q^(X^P)^and(P,Q)),Lemma):-
 	K=.. [Lemma,X,Y].
 
 
-lex(iv(X^P),Lemma):-
+lex(iv((X^P),[]),Word):-
+    uninflect0(Word,Lemma),
 	lemma(Lemma,iv),
 	P=.. [Lemma,X].
-lex(tv(K^W^P),Lemma):-
-	lemma(Lemma,tv),
+lex(tv((K^W^P),[]),Word):-
+  	uninflect0(Word,Lemma),
+   	lemma(Lemma,tv),
 	P=.. [Lemma,K,W].
-lex(dtv(K^W^J^P),Lemma):-
-	lemma(Lemma,tv),
+lex(dtv((K^W^J^P),[]),Word):-
+    	uninflect0(Word,Lemma),
+	lemma(Lemma,dtv),
 	P=.. [Lemma,K,W,J].
 
-
+lex(aux(X),Lemma):-
+    lemma(Lemma,aux).
+    
+   
+lex(rel((X^P),[]),Lemma):-
+    lemma(Lemma,rel).
 
 % --------------------------------------------------------------------
 % Suffix types
 % --------------------------------------------------------------------
 
-uninflect0(X,Y):- lemma(X,A), Y=X.
+uninflect0(X,Y):- lemma(X,_), Y=X.
 uninflect0(X,Y):- atom_concat(A,B,X), lemma(A,_), uninflect1(B),Y=A.
 uninflect1(‘’).
-uninflect1(X):- noun_inflection(X).
-uninflect1(X):- verb_inflection(X).
+uninflect1(X):- noun_inflection(X),!.
+uninflect1(X):- verb_inflection(X),!.
 
 noun_inflection(s).
 noun_inflection(es).

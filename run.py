@@ -14,8 +14,12 @@ plmode = False
 # 		1.2 Processing tokenized list
 # ===========================================================
 def chat():
+	global plmode
 	while(True):
-		userInput = readinput()
+		if plmode:
+			userInput = input()
+		else:
+			userInput = readinput()
 		if userInput[0].startswith("bye"):
 			print("Bye!")
 			break
@@ -26,7 +30,7 @@ def chat():
 			plmode = False
 		print(userInput[0])
 		if plmode:
-			print(prolog.query(userInput[0]))
+			print(list(prolog.query(userInput)))
 		else:
 			process(userInput)
 # ===========================================================
@@ -49,7 +53,8 @@ def process(line):
 def parse(line):
 	toReturn = []
 	for word in line:
-		toPrint = list(prolog.query("tag(" + word + ",Y,Z)"))
-		toReturn.append([toPrint[0]["Y"],toPrint[0]["Z"]])
+		toPutIn = list(prolog.query("uninflect0(" + word +",Y)"))
+		toPrint = list(prolog.query("lex(X," + toPutIn[0]["Y"] +")"))
+		toReturn.append([toPrint[0]["X"]])
 	return toReturn
 chat()

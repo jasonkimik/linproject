@@ -83,7 +83,9 @@ is_a(egg,food).
 is_a(sandwich,food).
 is_a(popsicle,food).
 is_a(milk,beverage).
+is_a(water,beverage).
 is_a(X,thing):-	lemma(X,n).
+is_a(X,thing):-	is_a(_,X).
 
 
 lemma(who,wh).
@@ -91,6 +93,17 @@ lemma(what,wh).
 lemma(which,wh).
 
 lemma(there,pron).
+lemma(i,pron).
+lemma(me,pron).
+lemma(he,pron).
+lemma(him,pron).
+lemma(she,pron).
+lemma(her,pron).
+lemma(it,pron).
+lemma(we,pron).
+lemma(us,dtexists).
+lemma(they,pron).
+lemma(them,pron).
 
 lemma(tom,pn).
 lemma(mia,pn).
@@ -102,6 +115,11 @@ lemma(a,dtexists).
 lemma(an,dtexists).
 lemma(the,dtexists).
 lemma(some,dtexists).
+lemma(my,dtexists).
+lemma(his,dtexists).
+lemma(her,dtexists).
+lemma(our,dtexists).
+lemma(their,dtexists).
 
 lemma(each,dtforall).
 lemma(all,dtforall).
@@ -138,6 +156,9 @@ lemma(not,adv).
 
 
 lemma(exist,iv).
+lemma(rot,iv).
+lemma(ripe,iv).
+lemma(ripen,iv).
 
 lemma(eat,tv).
 lemma(ate,tv).
@@ -145,6 +166,9 @@ lemma(contain,tv).
 lemma(belong,tv).
 
 lemma(put,dtv).
+lemma(place,dtv).
+lemma(add,dtv).
+lemma(remove,dtv).
 
 
 lemma(in,p).
@@ -156,6 +180,7 @@ lemma(of,p).
 lemma(on,p).   
 lemma(to,p).
 lemma(at,p).
+
 
 lemma(is,aux).
 lemma(was,aux).
@@ -176,9 +201,11 @@ lemma(should,aux).
 lemma(would,aux).
 
 
-lemma(that, rel).
- 
- 
+lemma(that,rel).
+lemma(which,rel).
+lemma(who,rel).
+
+
 % --------------------------------------------------------------------
 % Constructing lexical items:
 % word = lemma + suffix (for "suffix" of size 0 or bigger)

@@ -28,9 +28,13 @@ def chat():
 			continue
 		elif userInput[0].startswith("plend"):
 			plmode = False
-		print(userInput[0])
+		print(userInput)
 		if plmode:
-			print(list(prolog.query(userInput)))
+			if userInput.startswith("parse"):
+				userInput = userInput[7:][:-5]
+				print(parse(userInput.split(',')))
+			else:
+				print(list(prolog.query(userInput)))
 		else:
 			process(userInput)
 # ===========================================================

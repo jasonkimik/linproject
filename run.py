@@ -55,10 +55,6 @@ def process(line):
 	print(parsedLine)
 	
 def parse(line):
-	toReturn = []
-	for word in line:
-		toPutIn = list(prolog.query("uninflect0(" + word +",Y)"))
-		toPrint = list(prolog.query("lex(X," + toPutIn[0]["Y"] +")"))
-		toReturn.append([toPrint[0]["X"]])
+	toReturn = list(prolog.query("parse(" + line +",X)"))[0][X]
 	return toReturn
 chat()

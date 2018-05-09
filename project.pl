@@ -45,9 +45,22 @@ process([bye|_]):-
 % 3. Obtain FOL representation for input sentence
 % ===========================================================
 
-%parse(Input, SemanticRepresentation):-
-% ...
+parse(Input,SemanticRepresentation):-
+        doparse([],Input,SemanticRepresentation).
 
+doparse(K,[],K).
+ 
+doparse([Y,X|RestStack],Line,K):-
+       rule(LHS,[X,Y]),
+       doparse([LHS|RestStack],Line,K).
+
+doparse([X|RestStack],Line,K):-
+       rule(LHS,[X]),
+       doparse([LHS|RestStack],Line,K).
+
+doparse(Stack,[Word|Line],K):-
+        lex(X,Word),
+        doparse([X|Stack],Line,K).
 
 % ===========================================================
 % Grammar

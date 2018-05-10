@@ -45,22 +45,18 @@ process([bye|_]):-
 % 3. Obtain FOL representation for input sentence
 % ===========================================================
 
-parse(Input,SemanticRepresentation):-
-        doparse([],Input,SemanticRepresentation).
+parse(Sentence,SemRep):-
+        doparse([],Sentence,SemRep).
 
-doparse(K,[],K).
- 
-doparse([Y,X|RestStack],Line,K):-
+doparse([X],[],X).
+
+doparse([Y,X|MoreStack],Words,SemRep):-
        rule(LHS,[X,Y]),
-       doparse([LHS|RestStack],Line,K).
+       doparse([LHS|MoreStack],Words,SemRep),!.
 
-doparse([X|RestStack],Line,K):-
-       rule(LHS,[X]),
-       doparse([LHS|RestStack],Line,K).
-
-doparse(Stack,[Word|Line],K):-
+doparse(Stack,[Word|Words],SemRep):-
         lex(X,Word),
-        doparse([X|Stack],Line,K).
+        doparse([X|Stack],Words,SemRep).
 
 % ===========================================================
 % Grammar
@@ -241,9 +237,9 @@ lex(pn((Name^X)^X),Name):-
 
 lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
 	lemma(Word,dtforall).
-lex(dt((X^P)^(X^Q)^exists(X,imp(P,Q))),Word):-
+lex(dt((X^P)^(X^Q)^exists(X,and(P,Q))),Word):-
 	lemma(Word,dtexists).
-lex(dt((X^P)^(X^Q)^notexist(X,imp(P,Q))),Word):-
+lex(dt((X^P)^(X^Q)^notexist(X,and(P,Q))),Word):-
 	lemma(Word,dtnotexist).
 
 

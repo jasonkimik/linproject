@@ -85,21 +85,9 @@ lemma(fridge,n).
 lemma(milk,n).
 lemma(popsicle,n).
 
-is_a(ham,meat).
-is_a(meat,food).
-is_a(watermelon,food).
-is_a(egg,food).
-is_a(sandwich,food).
-is_a(popsicle,food).
-is_a(milk,beverage).
-is_a(water,beverage).
-is_a(X,thing):-	lemma(X,n).
-is_a(X,thing):-	is_a(_,X).
-
-
-lemma(who,wh).
-lemma(what,wh).
-lemma(which,wh).
+lemma(who,whpr).
+lemma(what,whpr).
+lemma(which,whpr).
 
 lemma(there,pron).
 lemma(i,pron).
@@ -129,24 +117,23 @@ lemma(his,dtexists).
 lemma(her,dtexists).
 lemma(our,dtexists).
 lemma(their,dtexists).
+lemma(zero,dtexists).
+lemma(one,dtexists).
+lemma(two,dtexists).
+lemma(three,dtexists).
+lemma(four,dtexists).
+lemma(five,dtexists).
+lemma(six,dtexists).
+lemma(seven,dtexists).
+lemma(eight,dtexists).
+lemma(nine,dtexists).
+lemma(ten,dtexists).
 
 lemma(each,dtforall).
 lemma(all,dtforall).
 lemma(every,dtforall).
 
 lemma(no,dtnotexist).
-
-lemma(zero,dtcar).
-lemma(one,dtcar).
-lemma(two,dtcar).
-lemma(three,dtcar).
-lemma(four,dtcar).
-lemma(five,dtcar).
-lemma(six,dtcar).
-lemma(seven,dtcar).
-lemma(eight,dtcar).
-lemma(nine,dtcar).
-lemma(ten,dtcar).
 
 
 lemma(red,adj).
@@ -215,6 +202,17 @@ lemma(which,rel).
 lemma(who,rel).
 
 
+is_a(ham,meat).
+is_a(meat,food).
+is_a(watermelon,food).
+is_a(egg,food).
+is_a(sandwich,food).
+is_a(popsicle,food).
+is_a(milk,beverage).
+is_a(water,beverage).
+is_a(X,thing):-	lemma(X,n).
+is_a(X,thing):-	is_a(_,X).
+
 % --------------------------------------------------------------------
 % Constructing lexical items:
 % word = lemma + suffix (for "suffix" of size 0 or bigger)
@@ -225,8 +223,8 @@ lex(n(X^P),Word):-
   	uninflect0(Word,Lemma),
 	lemma(Lemma,n),
 	P=.. [Lemma,X].
-lex(wh(X^P),Lemma):-
-	lemma(Lemma,wh),
+lex(whpr(X^P),Lemma):-
+	lemma(Lemma,whpr),
 	P=.. [Lemma,X].
 lex(pron(X^P),Lemma):-
 	lemma(Lemma,pron),
@@ -301,10 +299,13 @@ tag(X,Y,Z):- uninflect0(X,K),Y=K, lemma(K,Z).
 
 rule(np(Y),[dt(X^Y),n(X)]).
 rule(np(X),[pn(X)]).
+rule(np(X),[pron(X)]).
 
-rule(s(Y),[np(X^Y),vp(X)]).                
+rule(s(Y),[np(X^Y),vp(X)]).
 
+rule(n(Y),[adv(X^Y),n(X)]).
 rule(n(Y),[adj(X^Y),n(X)]).
+rule(n(Y),[pron(X)]).
 
 rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
 rule(pp(Z),[p(X^Y^Z),np(X^Y)]).

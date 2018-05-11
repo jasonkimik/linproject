@@ -267,12 +267,12 @@ rule(n(Y),[adj(X^Y),n(X)]).
 
 rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
 rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
-
-rule(vp(X^W),[aux,np(Y^W)]).
+rule(vp(X),[aux,pp(X)]).
 
 rule(vp(X),[iv(X)]).
 rule(vp(X^W),[tv(X^Y),np(Y^W)]).
 rule(vp(X^W),[dtv(X^Y^K),np(Y^W),np(K^W)]).
+rule(vp(X^W),[aux,np(Y^W)]).
 
 rule(s(Y,WH),[np(X^Y),vp(X,WH)]).
 rule(vp(X,WH),[iv(X,WH)]).

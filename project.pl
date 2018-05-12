@@ -374,16 +374,17 @@ respond(Evaluation) :-
 
 % wh-interrogative true in the model
 % ...
-respond(Evaluation) :-
-	whin(Evaluation).						
-
-whin([X|Input]):-
+whin([X|Input],Z):-
 	c1(X,K),
 	c2(K,A),
     f(Ans,A),
 	atom_concat(Ans,',',ToPrint),
 	write(ToPrint),
-	whin(Input).
+	Z1 = Z + 1,
+	whin(Input,Z1).
+
+whin([],Z):-
+	Z > 0.
 
 c2([X|_],X).
 c1([_|X],X).

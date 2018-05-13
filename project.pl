@@ -347,6 +347,69 @@ rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
 
 % model(...,...)
 
+model([a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s],
+           [ [meat, [a]], [bowl,[b]],[shelf,[c]],[box,[d,e,f,g,h,i]],[thing,[j]],[egg,[k]],[freezer,[l]],[ham,[m]],[container,[n]],[sandwich,[o]],[milk,[p]],[popsicle,[q]],[person,[r,s,t,u]],[contain,[[d,a],[e,a],[f,a],[g,a],[h,a],[i,a],[d,k],[e,k],[f,k],[g,k],[h,k],[i,k],[d,m],[e,m],[f,m],[g,m],[h,m],[i,m],[d,o],[e,o],[f,o],[g,o],[h,o],[i,o],[d,p],[e,p],[f,p],[g,p],[h,p],[i,p],[d,q],[e,q],[f,q],[g,q],[h,q],[i,q],[l,a],[l,k],[l,m],[l,o],[l,p],[l,q]]],[belong,[[r,d],[r,e],[r,f],[r,g],[r,h],[r,i],[s,d],[s,e],[s,f],[s,g],[s,h],[s,i],[t,d],[t,e],[t,f],[t,g],[t,h],[t,i],[u,d],[u,e],[u,f],[u,g],[u,h],[u,i]]],[put,[ [r,a,l],[s,a,l],[t,a,l],[u,a,l],[r,d,b],[s,d,b],[t,d,b],[u,d,b]]]]).
+	   
+modelchecker(Line,Out):-
+	sat([],Line,Out).
+	
+i(Var,G,Value):- 
+    var(Var),
+    member([Var2,Value],G), 
+    Var == Var2.   
+
+i(C,_,Value):- 
+   nonvar(C),
+   f(C,Value).
+
+f(Symbol,Value):- 
+   model(_,F),
+    member([Symbol,ListOfValues],F), 
+    member(Value,ListOfValues).  
+
+extend(G,X,[ [X,Val] | G]):-
+   model(D,_),
+   member(Val,D).
+
+sat(G1,exists(X,Formula),G3):-
+   extend(G1,X,G2),
+   sat(G2,Formula,G3).
+
+ sat(G1,the(X,and(A,B)),G3):-
+   sat(G1,exists(X,and(A,B)),G3),
+   i(X,G3,Value), 
+   \+ ( ( sat(G1,exists(X,A),G2), i(X,G2,Value2), \+(Value = Value2)) ).
+
+sat(G,not(Formula2),G):-
+   \+ sat(G,Formula2,_).
+
+sat(G, forall(X,Formula2),G):-
+  sat(G,not( exists(X,not(Formula2) ) ),G).
+
+sat(G1,and(Formula1,Formula2),G3):-
+  sat(G1,Formula1,G2), 
+  sat(G2,Formula2,G3). 
+
+sat(G1,or(Formula1,Formula2),G2):-
+  ( sat(G1,Formula1,G2) ;
+    sat(G1,Formula2,G2) ).
+
+sat(G1,imp(Formula1,Formula2),G2):-
+   sat(G1,or(not(Formula1),Formula2),G2).
+
+sat(G,Predicate,G):-
+   Predicate =.. [P,Var],
+   \+ (P = not),
+   i(Var,G,Value),
+   f(P,Value).
+
+sat(G,Rel,G):-
+   Rel =.. [R,Var1,Var2],
+   \+ ( member(R,[exists,forall,and,or,imp,the]) ),
+   i(Var1,G,Value1),
+   i(Var2,G,Value2),
+   f(R,[Value1,Value2]).
+   
 % ===========================================================
 %  Respond
 %  For each input type, react appropriately.

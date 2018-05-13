@@ -374,6 +374,9 @@ respond(Evaluation) :-
 
 % wh-interrogative true in the model
 % ...
+respond(Evaluation) :-
+	whin(Evaluation,0).		
+	
 whin([X|Input],Z):-
 	c1(X,K),
 	c2(K,A),

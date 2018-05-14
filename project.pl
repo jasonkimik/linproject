@@ -74,6 +74,36 @@ doparse(Stack,[Word|Words],SemRep):-
 % lemma(+Lemma,+Category)
 % --------------------------------------------------------------------
 
+parse(Sentence,SemRep):-
+        doparse([],Sentence,SemRep).
+
+doparse([X],[],X).
+
+doparse([Y,X|MoreStack],Words,SemRep):-
+       rule(LHS,[X,Y]),
+       doparse([LHS|MoreStack],Words,SemRep),!.
+
+doparse([X|MoreStack],Words,SemRep):-
+       rule(LHS,[X]),
+       doparse([LHS|MoreStack],Words,SemRep).
+
+doparse(Stack,[Word|Words],SemRep):-
+        lex(X,Word),
+        doparse([X|Stack],Words,SemRep).
+
+
+% ===========================================================
+% Grammar
+% 1. List of lemmas
+% 2. Lexical items
+% 3. Phrasal rules
+% ===========================================================
+
+% ----------------------------------------------------------
+% Lemmas are uninflected, except for irregular inflection
+% lemma(+Lemma,+Category)
+% ----------------------------------------------------------
+
 lemma(bowl,n).
 lemma(box,n).
 lemma(shelf,n).
@@ -110,6 +140,7 @@ lemma(tom,pn).
 lemma(mia,pn).
 lemma(sam,pn).
 lemma(sue,pn).
+lemma(frank,pn).
 
 
 lemma(a,dtexists).
@@ -181,6 +212,16 @@ lemma(on,p).
 lemma(to,p).
 lemma(at,p).
 
+lemma(in,vacp).
+lemma(under,vacp).
+lemma(top,vacp).
+lemma(inside,vacp).
+lemma(with,vacp).
+lemma(of,vacp).
+lemma(on,vacp).   
+lemma(to,vacp).
+lemma(at,vacp).
+
 
 lemma(is,aux).
 lemma(was,aux).
@@ -217,11 +258,10 @@ is_a(water,beverage).
 is_a(X,thing):-	lemma(X,n).
 is_a(X,thing):-	is_a(_,X).
 
-% --------------------------------------------------------------------
+% ----------------------------------------------------------
 % Constructing lexical items:
 % word = lemma + suffix (for "suffix" of size 0 or bigger)
-% --------------------------------------------------------------------
-
+% ---------------------------------------------------------
 
 lex(n(X^P),Word):-
   	uninflect0(Word,Lemma),
@@ -271,18 +311,22 @@ lex(dtv((K^W^J^P),[]),Word):-
 	lemma(Lemma,dtv),
 	P=.. [Lemma,K,W,J].
 
-lex(aux,Lemma):-
+lex(aux([]),Lemma):-
     lemma(Lemma,aux).
       
-lex(rel,Lemma):-
+lex(rel([]),Lemma):-
     lemma(Lemma,rel).
 
-% --------------------------------------------------------------------
-% Suffix types
-% --------------------------------------------------------------------
+lex(vacp([]),Lemma):-
+    lemma(Lemma,vacp).
+
+% -----------------------------------------
+% % Suffix types
+% ---------------------------------------
 
 uninflect0(X,Y):- lemma(X,_), Y=X.
-uninflect0(X,Y):- atom_concat(A,B,X), lemma(A,_), uninflect1(B),Y=A.
+uninflect0(X,Y):- atom_concat(A,B,X), 
+    lemma(A,_), uninflect1(B),Y=A.
 uninflect1(‘’).
 uninflect1(X):- noun_inflection(X),!.
 uninflect1(X):- verb_inflection(X),!.
@@ -293,18 +337,16 @@ verb_inflection(s).
 verb_inflection(ing).
 verb_inflection(ed).
 
-tag(X,Y,Z):- uninflect0(X,K),Y=K, lemma(K,Z).
 
-
-% --------------------------------------------------------------------
+% ---------------------------------------------
 % Phrasal rules
 % rule(+LHS,+ListOfRHS)
-% --------------------------------------------------------------------
+% --------------------------------------------
 
 rule(np(Y),[dt(X^Y),n(X)]).
 rule(np(X),[pn(X)]).
 rule(np(X),[pron(X)]).
-rule(np(X),[n(X)]).
+rule(np((X^P)^exists(X,and(P,Q))),[n(X^Q)]).
 
 rule(s(Y),[np(X^Y),vp(X)]).
 
@@ -313,30 +355,40 @@ rule(n(Y),[adj(X^Y),n(X)]).
 
 rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
 rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
-rule(vp(X),[aux,pp(X)]).
+rule(vacpp(X),[vacp([]),np(X)]).
+rule(vp(X),[aux([]),pp(X)]).
+
+rule(pv(X^Y),[tv(X^Y,[]),vacp([])]).
 
 rule(vp(X),[iv(X)]).
-rule(vp(X^W),[tv(X^Y),np(Y^W)]).
-rule(vp(X^W),[dtv(X^Y^K),np(Y^W),np(K^W)]).
-rule(vp(X^W),[aux,np(Y^W)]).
-
-rule(s(Y,WH),[np(X^Y),vp(X,WH)]).
-rule(vp(X,WH),[iv(X,WH)]).
-rule(vp(X^K,[]),[tv(X^Y,[]),np(Y^K)]).
-rule(vp(X^K,[]),[dtv(X^Y^J,[]),np(Y^K),np(J,K)]).
+rule(vp(X^W),[aux([]),np(X^W)]).
+rule(vp(X^W),[pv(X^Y),np(Y^W)]).
 
 rule(s(X,[WH]),[vp(X,[WH])]).
+rule(vp(X,WH),[iv(X,WH)]).
+rule(vp(X^K,[]),[tv(X^Y,[]),np(Y^K)]).
+rule(vp(X^K,[]),[pv(X^Y,[]),np(Y^K)]).
 rule(vp(K,[WH]),[tv(Y,[WH]),np(Y^K)]).
 rule(vp(K,[WH]),[dtv(Y^J,[WH]),np(Y^K),np(J^K)]).
+rule(vp(K,[WH]),[pv(Y,[WH]),np(Y^K)]).
 
-rule(Y,[whpr(X^Y),vp(X,[])]).
-rule(ynq(Y),[aux,np(X^Y),vp(X,[])]).
-rule(Z,[whpr((X^Y)^Z),inv_s(Y,[X])]).
-rule(inv_s(Y,[WH]),[aux,np(X^Y),vp(X,[WH])]).
+rule(ynq(X),[aux([]),s(X)]).
+rule(ynq(Z),[aux([]),pron(A^B),np((A^B)^Z)]).
+rule(q(Y),[whpr(X^Y),vp(X)]).
+rule(q(Z),[whpr((X^Y)^Z),inv_s(Y,[X])]).
+rule(inv_s(Y,[WH]),[aux([]),np(X^Y),iv(X,[WH])]).
+rule(iv(X,[Y]),[tv(X,[])]).
+rule(tv(X,[Y]),[tv(X,[])]).
 
+rule(rc(Y,WH),[rel([]),np(X^Y),tv(X,WH)]).
+rule(rc(Y,[X]),[rel([]),s(Y,[X])]).
+rule(rc(Y,[WH]),[rel([]),vp(Y,[WH])]).
+rule(rc(Y,[]),[rel([]),vp(Y,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(X^Z,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
 
+rule(bloop(X^Z,[]),[dtv(X^Y,[]),vacpp(Y^Z)]).
+rule(vp(Z,[]),[bloop(A^B,[]),np((A^B)^Z)]).
 
 % ===========================================================
 %  Modelchecker:

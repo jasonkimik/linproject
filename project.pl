@@ -375,7 +375,21 @@ model([a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,x,y,z],
            [ [meat, [a]], [bowl,[b]],[shelf,[c]],[box,[d,e,f,g,h,i]],[thing,[j]],[egg,[k]],[freezer,[l]],[ham,[m]],[container,[n]],[sandwich,[o]],[milk,[p]],[popsicle,[q]],[person,[r,s,t,u]],[fridge,[v]],
 	   [contain,[[d,a],[e,a],[f,a],[g,a],[h,a],[i,a],[d,k],[v,a],[v,k],[v,m],[v,o],[v,p],[v,q],[e,k],[f,k],[g,k],[h,k],[i,k],[d,m],[e,m],[f,m],[g,m],[h,m],[i,m],[d,o],[e,o],[f,o],[g,o],[h,o],[i,o],[d,p],[e,p],[f,p],[g,p],[h,p],[i,p],[d,q],[e,q],[f,q],[g,q],[h,q],[i,q],[l,a],[l,k],[l,m],[l,o],[l,p],[l,q]]],[belong,[[d,r],[e,r],[f,r],[g,r],[h,r],[i,r],[d,s],[e,s],[f,s],[g,s],[h,s],[s,i],[d,t],[e,t],[f,t],[g,t],[h,t],[i,t],[d,u],[e,u],[f,u],[g,u],[h,u],[i,u]]],[put,[ [r,a,l],[s,a,l],[t,a,l],[u,a,l],[r,d,b],[s,d,b],[t,d,b],[u,d,b]]]]).	   
 modelchecker(Line,Out):-
-	sat([],Line,Out).
+	sat([],Line,Out);
+	(
+		(
+			Line = s(_,_),
+			Out=[not_true_in_the_model]
+		);
+		(
+			Line = ynq(_,_),
+			Out=[no_to_question]
+		);
+		(
+			Line = q(_,_),
+			Out=[wh-interrogative_false]
+		)
+	).
 	
 i(Var,G,Value):- 
     var(Var),

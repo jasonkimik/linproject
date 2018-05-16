@@ -89,6 +89,7 @@ lemma(fridge,n).
 lemma(milk,n).
 lemma(popsicle,n).
 lemma(person,n).
+lemma(banana,n).
 
 lemma(who,whpr).
 lemma(what,whpr).
@@ -225,6 +226,9 @@ is_a(sandwich,food).
 is_a(popsicle,food).
 is_a(milk,beverage).
 is_a(water,beverage).
+is_a(fridge,container).
+is_a(freezer,container).
+is_a(box,container).
 is_a(X,person):- lemma(X,pn).
 is_a(X,thing):-	lemma(X,n).
 is_a(X,thing):-	is_a(_,X).
@@ -320,6 +324,7 @@ rule(np(X),[pron(X)]).
 rule(np((X^P)^exists(X,and(P,Q))),[n(X^Q)]).
 
 rule(s(Y),[np(X^Y),vp(X)]).
+rule(s(Y,[]),[np(X^Y),vp(X,[])]).
 
 rule(vp(Y,[]),[adv(X^Y),vp(X,[])]).
 rule(n(Y),[adj(X^Y),n(X)]).
@@ -329,38 +334,37 @@ rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
 rule(vacpp(X),[vacp([]),np(X)]).
 rule(vp(X),[aux([]),pp(X)]).
 
-rule(pv(X^Y),[tv(X^Y,[]),vacp([])]).
+rule(pv(X^Y,[]),[tv(X^Y,[]),vacp([])]).
 
 rule(vp(X),[iv(X)]).
-rule(vp(X^W),[aux([]),np(X^W)]).
-rule(vp(X^W),[pv(X^Y),np(Y^W)]).
-
-rule(s(X,[WH]),[vp(X,[WH])]).
-rule(vp(X,WH),[iv(X,WH)]).
 rule(vp(X^K,[]),[tv(X^Y,[]),np(Y^K)]).
+rule(vp(X^K,[]),[dtv(X^Y,[]),np(Y^K)]).
 rule(vp(X^K,[]),[pv(X^Y,[]),np(Y^K)]).
-rule(vp(K,[WH]),[tv(Y,[WH]),np(Y^K)]).
-rule(vp(K,[WH]),[dtv(Y^J,[WH]),np(Y^K),np(J^K)]).
-rule(vp(K,[WH]),[pv(Y,[WH]),np(Y^K)]).
+rule(vp(X^W),[aux([]),np(X^W)]).
+rule(vp(X^W,[]),[pv(X^Y,[]),np(Y^W)]).
 
-rule(ynq(X),[aux([]),s(X)]).
-rule(ynq(A^C),[aux([]),pron(B^C),n(A^B)]).
-rule(q(Y),[whpr(X^Y),vp(X,[])]).
-rule(q(Z),[whpr((X^Y)^Z),inv_s(Y,[X])]).
-rule(inv_s(A^C,[WH]),[vp(B^C),tv(A^B,[WH])]).
 rule(iv(X,[_]),[tv(X,[])]).
 rule(tv(X,[_]),[tv(X,[])]).
 
-rule(rc(Y,WH),[rel([]),np(X^Y),tv(X,WH)]).
-rule(rc(Y,[X]),[rel([]),s(Y,[X])]).
+rule(s(X,[WH]),[vp(X,[WH])]).
+rule(vp(X,WH),[iv(X,WH)]).
+rule(vp(K,[WH]),[tv(Y,[WH]),np(Y^K)]).
+rule(vp(K,[WH]),[dtv(Y,[WH]),np(Y^K)]).
+rule(vp(K,[WH]),[pv(Y,[WH]),np(Y^K)]).
+
+rule(ynq(X),[aux([]),s(X)]).
+rule(ynq(X),[vp(_),np(_^X)]).
+rule(q(Y),[whpr(X^Y),vp(X,[])]).
+rule(q(Z),[whpr((X^Y)^Z),inv_s(Y,[X])]).
+rule(inv_s(A^C,[WH]),[vp(B^C),tv(A^B,[WH])]).
+
+rule(reln(X),[rel([]),np(X)]).
+rule(rc(A^C,[]),[reln(B^C),tv(A^B,[])]).
+rule(rc(Y,WH),[rel([]),np(X^Y),tv(X^WH)]).
 rule(rc(Y,[WH]),[rel([]),vp(Y,[WH])]).
 rule(rc(Y,[]),[rel([]),vp(Y,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(X^Z,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
-
-rule(bloop(X^W,[]),[dtv(X^Y,[]),np(Z^W),vacpp(Y^Z)]).
-rule(bloop(X^Z,[]),[dtv(X^Y,[]),vacpp(Y^Z)]).
-rule(vp(W,[]),[np(Z^W),bloop(Z,[])]).
 
 % ===========================================================
 %  Modelchecker:
@@ -372,8 +376,11 @@ rule(vp(W,[]),[np(Z^W),bloop(Z,[])]).
 % model(...,...)
 
 model([a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,x,y,z],
-           [ [meat, [a]], [bowl,[b]],[shelf,[c]],[box,[d,e,f,g,h,i]],[thing,[j]],[egg,[k]],[freezer,[l]],[ham,[m]],[container,[n]],[sandwich,[o]],[milk,[p]],[popsicle,[q]],[person,[r,s,t,u]],[fridge,[v]],
-	   [contain,[[d,a],[e,a],[f,a],[g,a],[h,a],[i,a],[d,k],[v,a],[v,k],[v,m],[v,o],[v,p],[v,q],[e,k],[f,k],[g,k],[h,k],[i,k],[d,m],[e,m],[f,m],[g,m],[h,m],[i,m],[d,o],[e,o],[f,o],[g,o],[h,o],[i,o],[d,p],[e,p],[f,p],[g,p],[h,p],[i,p],[d,q],[e,q],[f,q],[g,q],[h,q],[i,q],[l,a],[l,k],[l,m],[l,o],[l,p],[l,q]]],[belong,[[d,r],[e,r],[f,r],[g,r],[h,r],[i,r],[d,s],[e,s],[f,s],[g,s],[h,s],[s,i],[d,t],[e,t],[f,t],[g,t],[h,t],[i,t],[d,u],[e,u],[f,u],[g,u],[h,u],[i,u]]],[put,[ [r,a,l],[s,a,l],[t,a,l],[u,a,l],[r,d,b],[s,d,b],[t,d,b],[u,d,b]]]]).	   
+           [[meat,[a]],[bowl,[b]],[shelf,[c]],[box,[d,e,f,g]],[banana,h],[watermelon,i],[thing,[j]],[egg,[k]],[freezer,[l]],[ham,[m]],[container,[n]],[sandwich,[o]],[milk,[p]],[popsicle,[q]],[person,[r,s,t,u]],[fridge,[v]],
+	   [contain,[[v,k],[v,m],[v,o],[v,p],[v,q],[v,i],[e,k],[f,k],[g,k],[d,m],[e,m],[f,m],[g,m],[d,o],[e,o],[f,o],[g,o],[d,p],[e,p],[f,p],[d,q],[e,q],[f,q],[g,q],[l,m],[l,q]]],
+	   [belong,[[d,r],[e,r],[f,r],[g,r],[h,r],[i,r],[d,s],[e,s],[f,s],[g,s],[h,s],[s,i],[d,t],[e,t],[f,t],[g,t],[h,t],[i,t],[d,u],[e,u],[f,u],[g,u],[h,u],[i,u]]],
+	   [put,[ [r,a,l],[s,a,l],[t,a,l],[u,a,l],[r,d,b],[s,d,b],[t,d,b],[u,d,b] ]],
+	   [white,[v,d,p]],[red[e,f,l]],[blue[g,c,b,q]],[green,[i,k,m]]]).
 modelchecker(Line,Out):-
 	sat([],Line,Out),
 	(

@@ -104,6 +104,7 @@ doparse(Stack,[Word|Words],SemRep):-
 % lemma(+Lemma,+Category)
 % ----------------------------------------------------------
 
+
 lemma(bowl,n).
 lemma(box,n).
 lemma(shelf,n).
@@ -118,6 +119,7 @@ lemma(watermelon,n).
 lemma(fridge,n).
 lemma(milk,n).
 lemma(popsicle,n).
+lemma(person,n).
 
 lemma(who,whpr).
 lemma(what,whpr).
@@ -140,7 +142,6 @@ lemma(tom,pn).
 lemma(mia,pn).
 lemma(sam,pn).
 lemma(sue,pn).
-lemma(frank,pn).
 
 
 lemma(a,dtexists).
@@ -255,6 +256,7 @@ is_a(sandwich,food).
 is_a(popsicle,food).
 is_a(milk,beverage).
 is_a(water,beverage).
+is_a(X,person):- lemma(X,pn).
 is_a(X,thing):-	lemma(X,n).
 is_a(X,thing):-	is_a(_,X).
 
@@ -350,7 +352,7 @@ rule(np((X^P)^exists(X,and(P,Q))),[n(X^Q)]).
 
 rule(s(Y),[np(X^Y),vp(X)]).
 
-rule(n(Y),[adv(X^Y),n(X)]).
+rule(vp(Y,[]),[adv(X^Y),vp(X,[])]).
 rule(n(Y),[adj(X^Y),n(X)]).
 
 rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
@@ -373,12 +375,12 @@ rule(vp(K,[WH]),[dtv(Y^J,[WH]),np(Y^K),np(J^K)]).
 rule(vp(K,[WH]),[pv(Y,[WH]),np(Y^K)]).
 
 rule(ynq(X),[aux([]),s(X)]).
-rule(ynq(Z),[aux([]),pron(A^B),np((A^B)^Z)]).
-rule(q(Y),[whpr(X^Y),vp(X)]).
+rule(ynq(A^C),[aux([]),pron(B^C),n(A^B)]).
+rule(q(Y),[whpr(X^Y),vp(X,[])]).
 rule(q(Z),[whpr((X^Y)^Z),inv_s(Y,[X])]).
-rule(inv_s(Y,[WH]),[aux([]),np(X^Y),iv(X,[WH])]).
-rule(iv(X,[Y]),[tv(X,[])]).
-rule(tv(X,[Y]),[tv(X,[])]).
+rule(inv_s(A^C,[WH]),[vp(B^C),tv(A^B,[WH])]).
+rule(iv(X,[_]),[tv(X,[])]).
+rule(tv(X,[_]),[tv(X,[])]).
 
 rule(rc(Y,WH),[rel([]),np(X^Y),tv(X,WH)]).
 rule(rc(Y,[X]),[rel([]),s(Y,[X])]).
@@ -387,8 +389,9 @@ rule(rc(Y,[]),[rel([]),vp(Y,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(X^Z,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
 
+rule(bloop(X^W,[]),[dtv(X^Y,[]),np(Z^W),vacpp(Y^Z)]).
 rule(bloop(X^Z,[]),[dtv(X^Y,[]),vacpp(Y^Z)]).
-rule(vp(Z,[]),[bloop(A^B,[]),np((A^B)^Z)]).
+rule(vp(W,[]),[np(Z^W),bloop(Z,[])]).
 
 % ===========================================================
 %  Modelchecker:

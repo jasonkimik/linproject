@@ -60,38 +60,7 @@ doparse([X|MoreStack],Words,SemRep):-
 doparse(Stack,[Word|Words],SemRep):-
         lex(X,Word),
         doparse([X|Stack],Words,SemRep).
-
-
-% ===========================================================
-% Grammar
-% 1. List of lemmas
-% 2. Lexical items
-% 3. Phrasal rules
-% ===========================================================
-
-% --------------------------------------------------------------------
-% Lemmas are uninflected, except for irregular inflection
-% lemma(+Lemma,+Category)
-% --------------------------------------------------------------------
-
-parse(Sentence,SemRep):-
-        doparse([],Sentence,SemRep).
-
-doparse([X],[],X).
-
-doparse([Y,X|MoreStack],Words,SemRep):-
-       rule(LHS,[X,Y]),
-       doparse([LHS|MoreStack],Words,SemRep),!.
-
-doparse([X|MoreStack],Words,SemRep):-
-       rule(LHS,[X]),
-       doparse([LHS|MoreStack],Words,SemRep).
-
-doparse(Stack,[Word|Words],SemRep):-
-        lex(X,Word),
-        doparse([X|Stack],Words,SemRep).
-
-
+	
 % ===========================================================
 % Grammar
 % 1. List of lemmas
